@@ -1,0 +1,15 @@
+# Ignore build directories
+/build/
+*/build/
+*/CMakeFiles/
+*/CMakeCache.txt
+*/Makefile
+*/cmake_install.cmake
+
+# Ignore temporary files from IDEs
+.vscode/
+.idea/
+
+# Ignore compiled object files
+*.o
+*.obj
