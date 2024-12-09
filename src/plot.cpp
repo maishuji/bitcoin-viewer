@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-#include "matplotlibcpp.h"
+#include "external/matplotlibcpp.h"
 
 namespace plt = matplotlibcpp;
 

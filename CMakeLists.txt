@@ -30,18 +30,29 @@ ExternalProject_Add(
     LOG_BUILD ON
     LOG_INSTALL ON
     LOG_UPDATE ON
-    # Copy the header file to the destination directory
-    COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_BINARY_DIR}/matplotlibcpp/src/matplotlibcpp/matplotlibcpp.h 
-        ${PROJECT_SOURCE_DIR}/matplotlibcpp.h
 )
-message(STATUS "Bin dir : ${CMAKE_BINARY_DIR}")
 
 # Add executable
-add_executable(bitcoin_plot src/main.cpp src/plot.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/plot.cpp)
+
+add_custom_command(
+    OUTPUT ${PROJECT_SOURCE_DIR}/include/external/matplotlibcpp.h
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_BINARY_DIR}/matplotlibcpp/src/matplotlibcpp/matplotlibcpp.h
+        ${PROJECT_SOURCE_DIR}/include/external/matplotlibcpp.h
+    DEPENDS matplotlibcpp  # Ensure this happens after matplotlibcpp is downloaded
+    COMMENT "Copying matplotlibcpp.h to the src directory"
+)
+
+# Create a custom target to trigger the copy before building the main project
+add_custom_target(copy_matplotlibcpp_header ALL
+    DEPENDS ${PROJECT_SOURCE_DIR}/include/external/matplotlibcpp.h
+)
 
 # Make sure matplotlibcpp is downloaded before compiling
-add_dependencies(bitcoin_plot matplotlibcpp)
+add_dependencies(${PROJECT_NAME} copy_matplotlibcpp_header)
+
+target_include_directories(${PROJECT_NAME} PUBLIC include)
 
 # Link Python3 libraries
-target_link_libraries(bitcoin_plot PRIVATE Python3::Python Python3::NumPy)
+target_link_libraries(${PROJECT_NAME} PRIVATE Python3::Python Python3::NumPy)
