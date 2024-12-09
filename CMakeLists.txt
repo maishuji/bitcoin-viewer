@@ -9,6 +9,12 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 # Python3 and NumPy
 find_package(Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
 
+# Find libcurl
+find_package(CURL REQUIRED)
+
+# Find nlohmann_json
+find_package(nlohmann_json REQUIRED)
+
 # Add an ExternalProject to fetch matplotlibcpp.h
 include(ExternalProject)
 
@@ -55,4 +61,9 @@ add_dependencies(${PROJECT_NAME} copy_matplotlibcpp_header)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
 # Link Python3 libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE Python3::Python Python3::NumPy)
+target_link_libraries(${PROJECT_NAME} 
+    PRIVATE 
+        Python3::Python 
+        Python3::NumPy 
+        CURL::libcurl 
+        nlohmann_json::nlohmann_json)
